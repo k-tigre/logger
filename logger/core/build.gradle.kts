@@ -1,3 +1,5 @@
+import org.gradle.api.publish.maven.MavenPublication
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
@@ -36,14 +38,13 @@ android {
 
 afterEvaluate {
     publishing {
-        publications.named<MavenPublication>("kotlinMultiplatform") {
-            artifactId = "logger-core"
+        publications.withType<MavenPublication>().configureEach {
+            artifactId = when (name) {
+                "kotlinMultiplatform" -> "logger-core"
+                "desktop" -> "logger-core-desktop"
+                "androidRelease" -> "logger-core-android"
+                else -> artifactId
+            }
         }
-    }
-    tasks.matching {
-        it.name.startsWith("publish") &&
-            (it.name.contains("Desktop") || it.name.contains("AndroidRelease"))
-    }.configureEach {
-        enabled = false
     }
 }

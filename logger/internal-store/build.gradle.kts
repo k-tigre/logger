@@ -1,3 +1,5 @@
+import org.gradle.api.publish.maven.MavenPublication
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
@@ -57,14 +59,13 @@ sqldelight {
 
 afterEvaluate {
     publishing {
-        publications.named<MavenPublication>("kotlinMultiplatform") {
-            artifactId = "logger-internal-store"
+        publications.withType<MavenPublication>().configureEach {
+            artifactId = when (name) {
+                "kotlinMultiplatform" -> "logger-internal-store"
+                "desktop" -> "logger-internal-store-desktop"
+                "androidRelease" -> "logger-internal-store-android"
+                else -> artifactId
+            }
         }
-    }
-    tasks.matching {
-        it.name.startsWith("publish") &&
-            (it.name.contains("Desktop") || it.name.contains("AndroidRelease"))
-    }.configureEach {
-        enabled = false
     }
 }

@@ -8,11 +8,17 @@ Published to [GitHub Packages](https://github.com/k-tigre/logger/packages).
 
 | Artifact | Description |
 |----------|-------------|
-| `logger-core` | `Log`, `Log.Logger`, `Flow.debugLog` |
+| `logger-core` | KMP metadata — `Log`, `Log.Logger`, `Flow.debugLog` |
+| `logger-core-android` | Android implementation (pulled transitively) |
+| `logger-core-desktop` | JVM/desktop implementation (pulled transitively) |
 | `logger-logcat` | Android Logcat |
 | `logger-crashlytics` | Firebase Crashlytics |
-| `logger-internal-store` | SQLDelight DB + `LogsProvider` |
+| `logger-internal-store` | KMP metadata — SQLDelight DB + `LogsProvider` |
+| `logger-internal-store-android` | Android DB driver (pulled transitively) |
+| `logger-internal-store-desktop` | JVM DB driver (pulled transitively) |
 | `logger-console` | JVM stdout/stderr |
+
+App modules depend only on `logger-core`, `logger-logcat`, etc. Platform artifacts (`*-android`, `*-desktop`) are resolved automatically by Gradle.
 
 **Group:** `com.github.k-tigre`
 
