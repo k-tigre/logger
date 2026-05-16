@@ -21,7 +21,9 @@ jobs:
           java-version: "21"
 
       - name: Publish all logger modules
-        run: ./gradlew publish --no-daemon
+        run: |
+          chmod +x gradlew
+          ./gradlew publish --no-daemon
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
