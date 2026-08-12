@@ -17,6 +17,7 @@ Published to [GitHub Packages](https://github.com/k-tigre/logger/packages).
 | `logger-internal-store-android` | Android DB driver (pulled transitively) |
 | `logger-internal-store-desktop` | JVM DB driver (pulled transitively) |
 | `logger-console` | JVM stdout/stderr |
+| `logger-debug-ui` | Android Compose debug screen (`DebugActivity`) for browsing `LogsProvider` |
 
 App modules depend only on `logger-core`, `logger-logcat`, etc. Platform artifacts (`*-android`, `*-desktop`) are resolved automatically by Gradle.
 
@@ -71,13 +72,41 @@ dependencyResolutionManagement {
 `build.gradle.kts` (app module):
 
 ```kotlin
-val tigreLogger = "1.0.0"
+val tigreLogger = "1.1.0"
 
 dependencies {
     implementation("com.github.k-tigre:logger-core:$tigreLogger")
     implementation("com.github.k-tigre:logger-logcat:$tigreLogger")
     implementation("com.github.k-tigre:logger-crashlytics:$tigreLogger")
     implementation("com.github.k-tigre:logger-internal-store:$tigreLogger")
+    // optional debug UI (declare LAUNCHER / deep-link in the host app if needed)
+    debugImplementation("com.github.k-tigre:logger-debug-ui:$tigreLogger")
+}
+```
+
+### Debug UI
+
+`DebugActivity` is registered in the library manifest **without** a `MAIN`/`LAUNCHER` intent-filter.
+Add one in the host app when you want a launcher icon:
+
+```xml
+<activity
+    android:name="by.tigre.logger.debug.DebugActivity"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+```
+
+Or subclass and add preset filter tabs:
+
+```kotlin
+class AppDebugActivity : DebugActivity() {
+    override fun createExtraPages(logsProvider: LogsProvider): List<DebugPage> = listOf(
+        filteredLogsPage("Analytics", initialTagFilter = "Analytics", logsProvider),
+    )
 }
 ```
 
